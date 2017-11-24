@@ -36,13 +36,13 @@ import hpu.edu.spain.Objects2D.World;
 import hpu.edu.spain.Objects2D.WorldTask;
 import hpu.edu.spain.Objects2D.WorldTask.TaskType;
 
-public class ColorCollision extends JPanel{
+public class SpaceGame extends JPanel{
 	
 	static PriorityQueue<GameTask> taskQueue;
 	Color shipColor;
 	Game game;
 	
-	public ColorCollision(){
+	public SpaceGame(){
 		taskQueue = new PriorityQueue<>();
 		game = new Game();
 		setLayout(new BorderLayout());

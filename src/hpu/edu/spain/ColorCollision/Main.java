@@ -7,7 +7,7 @@ public class Main {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(700, 500);
 		frame.setResizable(true);
-		frame.add(new ColorCollision());
+		frame.add(new SpaceGame());
 		frame.setVisible(true);
 	}
 }
