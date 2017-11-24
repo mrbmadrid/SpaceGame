@@ -121,6 +121,9 @@ public class World {
 		for(int i = 0; i < dynamicEntities.size(); ++i){
 			dynamicEntities.get(i).render(g2d);
 		}
+//		for(int i = 0; i < allBodies.size(); ++i){
+//			g2d.draw(allBodies.get(i).body);
+//		}
 	}
 	
 	public List<Body> getStaticBodies(){

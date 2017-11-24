@@ -66,11 +66,13 @@ public class SpaceGame extends JPanel{
 		Sequencer sequencer;
 		Sequence sequence1, sequence2;
 		boolean bossSpawned;
+		int lives;
+		BufferedImage spl;
 		
 		static boolean[] controls = new boolean[7];
 		public Input input;
 		public Game(){
-			time = 0; bosses = 0;
+			time = 0; bosses = 0; lives = 3;
 			world = new World();
 			try {
 				Background b = new Background(10000, 800);
@@ -87,6 +89,7 @@ public class SpaceGame extends JPanel{
 				e.printStackTrace();
 			}
 			try {
+				spl = ImageIO.read(new File("./res/ys.png"));
 				sequencer = MidiSystem.getSequencer();
 				sequencer.open();
 				sequencer.setLoopCount(Sequencer.LOOP_CONTINUOUSLY);
@@ -160,10 +163,14 @@ public class SpaceGame extends JPanel{
 					controls[5]=false;
 					controls[6]=false;
 				}
+			}else if(lives > 0){
+				--lives;
+				sp = new SpaceShip(50, 250, world);
+				world.setPlayer(sp);
 			}
 			if(xx + bg.getWidth() > this.getWidth()){
-				world.moveOrigin(-.5-dx, -dy);
-				taskQueue.add(new GameTask(Task.MOVE, 0.5, 0, System.nanoTime()));
+				world.moveOrigin(-1-dx, -dy);
+				taskQueue.add(new GameTask(Task.MOVE, 1, 0, System.nanoTime()));
 				xx-=dx;
 				if(xx < -200){
 					int spawn = (int)(Math.random()*100);
@@ -246,10 +253,14 @@ public class SpaceGame extends JPanel{
 			super.paintComponent(g);
 			Graphics2D g2d = (Graphics2D) g;
 			g2d.drawImage(bg, (int)xx, (int)yy-bg.getHeight()/4, this);
+			world.render(g2d);
 			g2d.setColor(Color.green);
 			g2d.fillRect(20, 20, Math.min(200, sp.getLife()), 25);
 			g2d.setColor(Color.WHITE);
 			g2d.drawRect(20, 20, 200, 25);
+			for(int i = 0; i < lives; ++i){
+				g2d.drawImage(spl, 230+i*30, 20, 30, 20, this);
+			}
 			if(boss != null){
 				if(!boss.isDead()){
 					g2d.setColor(Color.red);
@@ -262,7 +273,6 @@ public class SpaceGame extends JPanel{
 					g2d.drawString("YOU WIN!", this.getWidth()/2-75, this.getHeight()/2);
 				}
 			}
-			world.render(g2d);
 		}
 		
 		private void render(){
