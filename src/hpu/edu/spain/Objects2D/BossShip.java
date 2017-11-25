@@ -37,8 +37,6 @@ public class BossShip extends DynamicEntity{
 	public BossShip(double xx, double yy, double startx, double starty, World world) {
 		super(xx, yy, SpaceShip.getShape(), world);
 		this.world = world;
-		setTrajectory(Math.PI/2);
-		setVelocity(100);
 		this.startx = startx;
 		this.starty = starty;
 		exhaust1 = new Point((int)xx+30, (int)yy+5);
@@ -59,7 +57,7 @@ public class BossShip extends DynamicEntity{
 		thrust4.setParticleTrajectoryRange(9*Math.PI/10, 11*Math.PI/10);
 		thrust4.setSpawnRange(0, 2);
 		thrust4.setRespawn(1);
-		c = new Color(100, 100, 255);
+		c = new Color(255, 0, 0);
 		id = 4;
 		collisionDamage = 100;
 		life = 500;
@@ -106,11 +104,11 @@ public class BossShip extends DynamicEntity{
 	public void tick(double step){
 		if(alive){
 			if(started){
-				if(yy > 300){
+				if(yy > 400){
 					if(v < 100)
 						accelerate(5);
 				}
-				else if(yy < 100){
+				else if(yy < 50){
 					if(v > -100)
 						accelerate(-5);
 				}else{
@@ -120,7 +118,7 @@ public class BossShip extends DynamicEntity{
 						if(v>0)
 						accelerate(1);
 				}
-				if(++timer % 300 == 0){
+				if(timer % 300 == 0){
 					if(closed){
 						opening = true;
 						closed = false;
@@ -130,13 +128,14 @@ public class BossShip extends DynamicEntity{
 					}
 				}else{
 					if(open){
-						if(timer%60==0){
+						if(timer%20==0){
 							Missile m = new Missile(xx-32, yy+15, world);
+							m.setVelocity(-300);
 							world.addTask(new WorldTask(TaskType.SPAWN, m));
 						}
 					}
 					if(closed){
-						if(timer%15==0){
+						if(timer%5==0){
 							Bullet b = new Bullet(xx-32, yy+15, world);
 							b.setVelocity(-500);
 							world.addTask(new WorldTask(TaskType.SPAWN, b));
@@ -161,9 +160,13 @@ public class BossShip extends DynamicEntity{
 					}
 				}
 			}else{
-				setTrajectory(Math.atan2(startx-xx, starty-yy));
-				if(Math.abs(startx+starty-xx-yy) < 1){
+				if(Math.abs(xx-startx) > 5)
+					xx+= ((xx-startx < 0) ? 1.0 : -1.0)*Math.max(2, (xx-startx)/120.0);
+				if(Math.abs(yy-starty) > 5)
+					yy+= ((yy-starty < 0) ? 1.0 : -1.0)*Math.max(2, (yy-starty)/120.0);
+				if(Math.abs(xx-startx) < 5 && Math.abs(yy-starty) < 5){
 					started = true;
+					setVelocity(75);
 					setTrajectory(Math.PI/2);
 				}
 			}
@@ -173,6 +176,7 @@ public class BossShip extends DynamicEntity{
 			thrust2.tick(step);
 			thrust3.tick(step);
 			thrust4.tick(step);
+			++timer;
 		}
 		super.tick(step);
 	}

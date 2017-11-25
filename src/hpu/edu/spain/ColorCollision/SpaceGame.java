@@ -75,7 +75,7 @@ public class SpaceGame extends JPanel{
 			time = 0; bosses = 0; lives = 3;
 			world = new World();
 			try {
-				Background b = new Background(10000, 800);
+				Background b = new Background(8000, 800);
 				bg = b.getImage();
 				List<Terrain> bounds = b.getBounds();
 				for(Body bd : bounds){
@@ -140,11 +140,11 @@ public class SpaceGame extends JPanel{
 			if(!sp.isDead()){
 				if(controls[0] && sp.getY() > 0){
 					sp.translate(0.0, -1.5);
-					dy += -1;
+					if(yy < 0)--dy;
 				}
 				if(controls[1] && sp.getY() < this.getHeight()-40){
 					sp.translate(0.0, 1.5);
-					dy += 1;
+					++dy;
 				}
 				if(controls[2] && sp.getX() > -1){
 					sp.translate(-1.5, 0.0);
@@ -155,6 +155,7 @@ public class SpaceGame extends JPanel{
 				}
 				if(controls[4]){
 					Bullet b = new Bullet(sp.getX()+45, sp.getY()+18, world);
+					b.setCollisionDamage(50);
 					world.addTask(new WorldTask(TaskType.SPAWN, b));
 					controls[4] = false;
 				}
@@ -183,16 +184,21 @@ public class SpaceGame extends JPanel{
 						a.setTrajectory(Math.random()*Math.PI+Math.PI);
 						world.addTask(new WorldTask(TaskType.SPAWN, a));
 					}
+					if(time%300 == 0){
+						if(Math.random() < 0.3){
+							world.addTask(new WorldTask(TaskType.SPAWN, 
+									new HealthStar(Math.random()*this.getWidth()+200, Math.random()*this.getHeight(), world)));
+						}
+					}
 				}
 			}else{
 				if(bosses == 0){
 					time = 0;
-					world.addTask(new WorldTask(TaskType.SPAWN, new HealthStar(300, 300, world)));
 					sequencer.stop();
 					++bosses;
 				}else if(bosses == 1 && time % 100 == 0){
 					++bosses;
-					boss = new BossShip(800, 100, 600, 20*bosses+100, world);
+					boss = new BossShip(800, 0, 600, 100, world);
 					world.addTask(new WorldTask(TaskType.SPAWN, boss));
 					try {
 						sequencer.setSequence(sequence1);
@@ -254,12 +260,20 @@ public class SpaceGame extends JPanel{
 			Graphics2D g2d = (Graphics2D) g;
 			g2d.drawImage(bg, (int)xx, (int)yy-bg.getHeight()/4, this);
 			world.render(g2d);
-			g2d.setColor(Color.green);
-			g2d.fillRect(20, 20, Math.min(200, sp.getLife()), 25);
-			g2d.setColor(Color.WHITE);
-			g2d.drawRect(20, 20, 200, 25);
 			for(int i = 0; i < lives; ++i){
-				g2d.drawImage(spl, 230+i*30, 20, 30, 20, this);
+				g2d.drawImage(spl, (this.getWidth()-lives*30-20)+i*30, 20, 30, 20, this);
+			}
+			Color c = new Color(225, 0, 0, 225);
+			for(int i = 0; i < Math.min(200, sp.getLife())/20*30; i+=30){
+				g2d.setColor(c);
+				g2d.fillRect(i+20, 20, 20, 25);
+				if(c.getGreen() == 225){
+					c = new Color(Math.max(0,c.getRed()-75), c.getGreen(), 0, 225);
+				}else{
+					c = new Color(c.getRed(), Math.min(250, c.getGreen()+75), 0, 225);
+				}
+				g2d.setColor(Color.white);
+				g2d.drawRect(i+20, 20, 20, 25);
 			}
 			if(boss != null){
 				if(!boss.isDead()){

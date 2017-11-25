@@ -53,7 +53,14 @@ public class HealthStar extends DynamicEntity {
 		part.setRespawn(1);
 		part.setRespawnAmount(3);
 		part.setSpawnRange(5, 5);
-		id = 1;
+		id = 6;
+	}
+	
+	@Override
+	public void collide(Body b){
+		if(b.id == 3){
+			super.collide(b);
+		}
 	}
 	
 	@Override

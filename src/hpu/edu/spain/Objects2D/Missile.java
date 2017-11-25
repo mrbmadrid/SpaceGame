@@ -21,7 +21,7 @@ public class Missile extends DynamicEntity{
 	
 	public Missile(double xx, double yy, World world) {
 		super(xx, yy, Missile.getBody(), world);
-		setVelocity(-100);
+		setVelocity(-150);
 		exhaust1 = new Point((int)xx+35, (int)yy);
 		thrust1 = new ParticleSystem(xx+35, yy, 1, Color.RED, 0, 4, 75, exhaust1);
 		thrust1.setParticleTrajectoryRange(-Math.PI/10, Math.PI/10);

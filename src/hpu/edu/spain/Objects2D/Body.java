@@ -23,13 +23,14 @@ public abstract class Body implements Serializable{
 	double xx, yy; //precision location points
 	int x, y; //integer location points
 	double v, o; //velocity and trajectory
-	boolean isBullet, alive;
+	boolean isBullet, alive, immune;
 	BodyType type; //denotes static or dynamic body
 	Color c; //Color primarily used for destruction particles
 	int id; //denotes specific class
 	int size; //Size scale modifier for body and rendering size
 	int life;
 	int collisionDamage;
+	int immuneTime;
 	
 	/**
 	 * Standard Body constructor, defaults to dynamic body
@@ -98,6 +99,7 @@ public abstract class Body implements Serializable{
 		v += dv;
 	}
 	
+	
 	/**
 	 * Set trajectory
 	 * @param o Body trajectory in radians
@@ -115,6 +117,15 @@ public abstract class Body implements Serializable{
 	public void turn(double t){
 		o += t;
 		o = (o < 0) ? 2*Math.PI+o : (o > 2*Math.PI) ? o - 2*Math.PI : o;
+	}
+	
+	/**
+	 * Directly set collision damage.
+	 * @param damage
+	 */
+	
+	public void setCollisionDamage(int damage){
+		collisionDamage = damage;
 	}
 	
 	
@@ -162,6 +173,7 @@ public abstract class Body implements Serializable{
 	 */
 	
 	protected boolean sensorCollision(Body b){
+		if((b.immune == true || immune == true) && b.type == BodyType.DYNAMIC) return false;
 		return b.body.intersects(sensor);
 	}
 	

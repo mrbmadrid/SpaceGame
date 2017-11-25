@@ -78,7 +78,7 @@ public class Asteroid extends DynamicEntity{
 
 	@Override
 	public boolean sensorCollide(Body b) {
-		if(staticImmunity && b.type == BodyType.STATIC)
+		if(staticImmunity && (b.type == BodyType.STATIC || b.id == 5))
 			return false;
 		return sensorCollision(b);
 	}

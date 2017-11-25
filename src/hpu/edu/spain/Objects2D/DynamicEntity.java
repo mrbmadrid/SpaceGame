@@ -51,8 +51,13 @@ public abstract class DynamicEntity extends Body{
 	public void collide(Body b) {
 		if(bodyCollision(b)){
 			if(b.alive){
-				doDamage(b.getCollisionDamage());
-				b.doDamage(collisionDamage);
+				if(this.id != 6 && b.id != 6){
+					doDamage(b.getCollisionDamage());
+					b.doDamage(collisionDamage);
+				}else if(b.id == 6 && this.id == 3){
+					doDamage(b.getCollisionDamage());
+					b.doDamage(collisionDamage);
+				}
 			}
 		}
 	}

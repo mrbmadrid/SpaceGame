@@ -164,21 +164,22 @@ public class World {
 	 * @param temp exploded asteroid
 	 */
 	
-	public void asteroidMult(DynamicEntity ast){
-		int size = ast.size;
-		explosion(ast.xx, ast.yy, Color.LIGHT_GRAY, ast.size);
-		Asteroid a1 = new Asteroid(ast.x+(size*10)/2, ast.y+size*10, size-1, this);
-		Asteroid a2 = new Asteroid(ast.x, ast.y-size*10, size-1, this);
-		Asteroid a3 = new Asteroid(ast.x+size*10, ast.y-size*10, size-1, this);
-		a1.setVelocity(50);
-		a1.setTrajectory(Math.random()*2*Math.PI/3);
-		a2.setVelocity(50);
-		a2.setTrajectory(Math.random()*2*Math.PI/3+2*Math.PI/3);
-		a3.setVelocity(50);
-		a3.setTrajectory(Math.random()*2*Math.PI/3+4*Math.PI/3);
-		addDynamicEntity(a1);
-		addDynamicEntity(a2);
-		addDynamicEntity(a3);
+	public void asteroidMult(double xx, double yy, int size){
+		explosion(xx, yy, Color.LIGHT_GRAY, size);
+		for(int i = 0; i < size; i++){
+			double ran = Math.random();
+			double angleOffset = 2*Math.PI * (double)i/(double)size;
+			if(ran > 0.5){
+				Asteroid a1 = new Asteroid(xx+(10*size)*Math.cos(angleOffset),
+						yy+(10*size)*Math.sin(angleOffset), size-1, this);
+				a1.setTrajectory(angleOffset);
+				a1.setVelocity(50+Math.random()*50);
+				addTask(new WorldTask(TaskType.SPAWN, a1));
+			}else if(size > 1 && ran < 0.25){
+				asteroidMult(xx+(10*size)*Math.cos(angleOffset), 
+						yy+(10*size)*Math.sin(angleOffset), size-1);
+			}
+		}
 	}
 	
 	public void addTask(WorldTask t){
@@ -191,30 +192,20 @@ public class World {
 			switch(t.t){
 			case KILL:
 				switch(t.b.id){
-				case 1:
+				case 1: case 6:
 					dynamicEntities.remove(t.b);
 					allBodies.remove(t.b);
-					break;
-				case 2:
-					dynamicEntities.remove(t.b);
-					allBodies.remove(t.b);
-					explosion(t.b.xx, t.b.yy, t.b.c, 4);
-					break;
-				case 3:
-					dynamicEntities.remove(t.b);
-					allBodies.remove(t.b);
-					explosion(t.b.xx, t.b.yy, t.b.c, 10);
-					break;
-				case 4:
-					dynamicEntities.remove(t.b);
-					allBodies.remove(t.b);
-					explosion(t.b.xx, t.b.yy, t.b.c, 15);
 					break;
 				case 5:
 					dynamicEntities.remove(t.b);
 					allBodies.remove(t.b);
-					if(t.b.size > 1) asteroidMult((Asteroid)t.b);
+					if(t.b.size > 1) asteroidMult(t.b.xx, t.b.yy, t.b.size);
 					else explosion(t.b.xx, t.b.yy, t.b.c, 3);
+					break;
+				default:
+					dynamicEntities.remove(t.b);
+					allBodies.remove(t.b);
+					explosion(t.b.xx, t.b.yy, t.b.c, 15);
 					break;
 				}
 				break;

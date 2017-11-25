@@ -15,7 +15,7 @@ public class SpaceShip extends DynamicEntity{
 	private static final long serialVersionUID = -1625064927221645542L;
 	ParticleSystem thrust1, thrust2;
 	Point exhaust1, exhaust2; //Anchor points for thrusts
-	BufferedImage sprite;
+	BufferedImage sprite, spritei;
 	
 	/**
 	 * Constructor
@@ -38,8 +38,11 @@ public class SpaceShip extends DynamicEntity{
 		c = new Color(100, 100, 255);
 		id = 3;
 		life = 200;
+		immuneTime = 150;
+		immune = true;
 		try {
 		    sprite = ImageIO.read(new File("./res/ys.png"));
+		    spritei = ImageIO.read(new File("./res/ysi.png"));
 		} catch (IOException e) {
 		}
 	}
@@ -71,7 +74,18 @@ public class SpaceShip extends DynamicEntity{
 	}
 	
 	@Override
+	public void doDamage(int damage){
+		if(!immune){
+			super.doDamage(damage);
+		}
+	}
+	
+	@Override
 	public void tick(double step){
+		if(immune){
+			if(--immuneTime < 0)
+				immune = false;
+		}
 		if(alive){
 			if(life > 200) life = 200;
 			exhaust1.setLocation((int)xx-3, (int)yy+7);
@@ -87,7 +101,10 @@ public class SpaceShip extends DynamicEntity{
 		if(alive){
 			thrust2.render(g2d);
 			thrust1.render(g2d);
-			g2d.drawImage(sprite, null, x-5, y);
+			if(immune)
+				g2d.drawImage(spritei, null, x-5, y);
+			else
+				g2d.drawImage(sprite, null, x-5, y);
 		}
 	}
 
