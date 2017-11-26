@@ -128,14 +128,14 @@ public class BossShip extends DynamicEntity{
 					}
 				}else{
 					if(open){
-						if(timer%20==0){
+						if(timer%30==0){
 							Missile m = new Missile(xx-32, yy+15, world);
 							m.setVelocity(-300);
 							world.addTask(new WorldTask(TaskType.SPAWN, m));
 						}
 					}
 					if(closed){
-						if(timer%5==0){
+						if(timer%10==0){
 							Bullet b = new Bullet(xx-32, yy+15, world);
 							b.setVelocity(-500);
 							world.addTask(new WorldTask(TaskType.SPAWN, b));
@@ -196,9 +196,11 @@ public class BossShip extends DynamicEntity{
 	public void doDamage(int damage){
 		if(open){
 			super.doDamage(damage);
-			ParticleSystem p = new ParticleSystem(xx, yy, 1, Color.YELLOW, 50, 4, 50);
+			if(alive){
+			ParticleSystem p = new ParticleSystem(xx, yy, 1, Color.GREEN.brighter(), 50, 4, 50);
 			p.setLifeSpan(30);
 			world.addTask(new WorldTask(TaskType.PARTICLE, p));
+			}
 		}
 	}
 	

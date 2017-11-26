@@ -23,7 +23,6 @@ import javax.sound.midi.Sequence;
 import javax.sound.midi.Sequencer;
 import javax.swing.JPanel;
 
-import hpu.edu.spain.ColorCollision.GameTask.Task;
 import hpu.edu.spain.Objects2D.Asteroid;
 import hpu.edu.spain.Objects2D.Body;
 import hpu.edu.spain.Objects2D.BossShip;
@@ -43,7 +42,6 @@ public class SpaceGame extends JPanel{
 	Game game;
 	
 	public SpaceGame(){
-		taskQueue = new PriorityQueue<>();
 		game = new Game();
 		setLayout(new BorderLayout());
 		
@@ -65,7 +63,7 @@ public class SpaceGame extends JPanel{
 		BossShip boss;
 		Sequencer sequencer;
 		Sequence sequence1, sequence2;
-		boolean bossSpawned;
+		boolean bossSpawned, scrolling;
 		int lives;
 		BufferedImage spl;
 		
@@ -74,8 +72,9 @@ public class SpaceGame extends JPanel{
 		public Game(){
 			time = 0; bosses = 0; lives = 3;
 			world = new World();
+			scrolling = true;
 			try {
-				Background b = new Background(8000, 800);
+				Background b = new Background(2000, 800);
 				bg = b.getImage();
 				List<Terrain> bounds = b.getBounds();
 				for(Body bd : bounds){
@@ -139,19 +138,19 @@ public class SpaceGame extends JPanel{
 			double dx = 0, dy = 0;
 			if(!sp.isDead()){
 				if(controls[0] && sp.getY() > 0){
-					sp.translate(0.0, -1.5);
-					if(yy < 0)--dy;
+					sp.translate(0.0, (scrolling) ? -1.5 : -2.5);
+					--dy;
 				}
-				if(controls[1] && sp.getY() < this.getHeight()-40){
-					sp.translate(0.0, 1.5);
+				if(controls[1] && sp.getY() < this.getHeight()-32){
+					sp.translate(0.0, (scrolling) ? 1.5 : 2.5);
 					++dy;
 				}
 				if(controls[2] && sp.getX() > -1){
-					sp.translate(-1.5, 0.0);
+					sp.translate((scrolling) ? -1.5 : -2.5, 0.0);
 				};
 				if(controls[3] && sp.getX() < this.getWidth()-50){
-					sp.translate(1.5, 0.0);
-					dx += 1.0;
+					sp.translate((scrolling) ? 1.5 : 2.5, 0.0);
+					++dx;
 				}
 				if(controls[4]){
 					Bullet b = new Bullet(sp.getX()+45, sp.getY()+18, world);
@@ -171,8 +170,8 @@ public class SpaceGame extends JPanel{
 			}
 			if(xx + bg.getWidth() > this.getWidth()){
 				world.moveOrigin(-1-dx, -dy);
-				taskQueue.add(new GameTask(Task.MOVE, 1, 0, System.nanoTime()));
-				xx-=dx;
+				xx-=1+dx;
+				yy-=dy;
 				if(xx < -200){
 					int spawn = (int)(Math.random()*100);
 					if(spawn < 1){
@@ -196,6 +195,7 @@ public class SpaceGame extends JPanel{
 					time = 0;
 					sequencer.stop();
 					++bosses;
+					scrolling = !scrolling;
 				}else if(bosses == 1 && time % 100 == 0){
 					++bosses;
 					boss = new BossShip(800, 0, 600, 100, world);
@@ -208,20 +208,10 @@ public class SpaceGame extends JPanel{
 						e.printStackTrace();
 					}
 				}
-				if(dy > 0 && bg.getHeight() > this.getHeight()-(yy-bg.getHeight()/4)
-						|| dy < 0){
+				if((dy > 0 && yy + bg.getHeight() < this.getHeight()) || (dy < 0 && yy > 0)){
 					world.moveOrigin(0, -dy);
+					yy-=dy;
 				}
-				
-			}
-			if((dy > 0 && bg.getHeight() > this.getHeight()-(yy-bg.getHeight()/4))
-					|| dy < 0){
-				yy-=dy;
-			}
-			GameTask gt = taskQueue.poll();
-			while(gt != null){
-				process(gt);
-				gt = taskQueue.poll();
 			}
 			x = (int)xx;
 			y = (int)yy;
@@ -242,17 +232,6 @@ public class SpaceGame extends JPanel{
 			}catch(IOException e){
 				e.printStackTrace();
 			};
-		}
-		
-		private void process(GameTask gt){
-			switch (gt.task){
-			case MOVE:
-				xx-=gt.dx;
-				yy+=gt.dy;
-				break;
-			default:
-				break;
-			}
 		}
 		
 		public void paintComponent(Graphics g){

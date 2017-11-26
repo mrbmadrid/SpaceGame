@@ -121,9 +121,6 @@ public class World {
 		for(int i = 0; i < dynamicEntities.size(); ++i){
 			dynamicEntities.get(i).render(g2d);
 		}
-//		for(int i = 0; i < allBodies.size(); ++i){
-//			g2d.draw(allBodies.get(i).body);
-//		}
 	}
 	
 	public List<Body> getStaticBodies(){
@@ -168,8 +165,8 @@ public class World {
 		explosion(xx, yy, Color.LIGHT_GRAY, size);
 		for(int i = 0; i < size; i++){
 			double ran = Math.random();
-			double angleOffset = 2*Math.PI * (double)i/(double)size;
-			if(ran > 0.5){
+			double angleOffset = 2*Math.PI * (double)i/(double)size + Math.random()*Math.PI;
+			if(ran > 0.25){
 				Asteroid a1 = new Asteroid(xx+(10*size)*Math.cos(angleOffset),
 						yy+(10*size)*Math.sin(angleOffset), size-1, this);
 				a1.setTrajectory(angleOffset);
