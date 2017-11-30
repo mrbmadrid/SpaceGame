@@ -137,13 +137,21 @@ public class ParticleSystem {
 	public Polygon getParticle(int type){
 		switch (type){
 		case 0:
-			return new Polygon(new int[]{-1, 1, 1, -1}, new int[]{1, 1, -1, -1}, 4);
+			return new Polygon(
+					new int[]{-1, 1, 1, -1}, 
+					new int[]{1, 1, -1, -1}, 4);
 		case 1:
-			return new Polygon(new int[]{1, -1, 1}, new int[]{0, 1, 2}, 3);
+			return new Polygon(
+					new int[]{1, -1, 1}, 
+					new int[]{0, 1, 2}, 3);
 		case 2:
 			return new Polygon(
 					new int[]{ 0, 1, 1, 3, 3, 1, 1, 0, 0, -2, -2, 0 },
 					new int[]{ 0, 0, 2, 2, 3, 3, 5, 5, 3, 3, 2, 2}, 12);
+		case 3:
+			new Polygon(
+					new int[]{0,5,0,-5},
+					new int[]{0,5,10,5}, 4);
 			default:
 				return new Polygon(new int[]{-1, 1, 1, -1}, new int[]{1, 1, -1, -1}, 4);
 		}

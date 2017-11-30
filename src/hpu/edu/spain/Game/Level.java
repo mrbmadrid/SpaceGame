@@ -1,7 +1,5 @@
-package hpu.edu.spain.ColorCollision;
+package hpu.edu.spain.Game;
 
-import java.awt.image.BufferedImage;
-import java.io.FileInputStream;
 import java.io.Serializable;
 import java.util.List;
 

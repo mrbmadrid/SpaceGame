@@ -60,7 +60,7 @@ public class BossShip extends DynamicEntity{
 		c = new Color(255, 0, 0);
 		id = 4;
 		collisionDamage = 100;
-		life = 500;
+		life = 1500;
 		try {
 		    body = ImageIO.read(new File("./res/bossbody.png"));
 		    arm = ImageIO.read(new File("./res/bossarms.png"));

@@ -189,7 +189,7 @@ public class World {
 			switch(t.t){
 			case KILL:
 				switch(t.b.id){
-				case 1: case 6:
+				case 1: case 6: case 7:
 					dynamicEntities.remove(t.b);
 					allBodies.remove(t.b);
 					break;

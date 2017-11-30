@@ -10,12 +10,15 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import hpu.edu.spain.Objects2D.WorldTask.TaskType;
+
 public class SpaceShip extends DynamicEntity{
 	
 	private static final long serialVersionUID = -1625064927221645542L;
 	ParticleSystem thrust1, thrust2;
 	Point exhaust1, exhaust2; //Anchor points for thrusts
 	BufferedImage sprite, spritei;
+	int upgrade;
 	
 	/**
 	 * Constructor
@@ -71,6 +74,43 @@ public class SpaceShip extends DynamicEntity{
 					15
 				},
 				6);		
+	}
+	
+	public void upgrade(int upgrade){
+		this.upgrade = upgrade;
+	}
+	
+	public void shoot(){
+		switch (upgrade){
+		default:
+			Bullet b1 = new Bullet(xx+45, yy+18, world);
+			b1.setCollisionDamage(50);
+			world.addTask(new WorldTask(TaskType.SPAWN, b1));
+			break;
+		case 1:
+			Bullet b2 = new Bullet(xx+45, yy+18, world);
+			b2.setCollisionDamage(50);
+			Bullet b3 = new Bullet(xx+45, yy+18, world);
+			b3.setCollisionDamage(50);
+			b3.setTrajectory(Math.PI/6);
+			Bullet b4 = new Bullet(xx+45, yy+18, world);
+			b4.setCollisionDamage(50);
+			b4.setTrajectory(11*Math.PI/6);
+			world.addTask(new WorldTask(TaskType.SPAWN, b2));
+			world.addTask(new WorldTask(TaskType.SPAWN, b3));
+			world.addTask(new WorldTask(TaskType.SPAWN, b4));
+			break;
+		}
+	}
+	
+	@Override
+	public void collide(Body b){
+		if(b.id == 7){
+			upgrade = 1;
+			world.addTask(new WorldTask(TaskType.KILL, b));
+		}else{
+			super.collide(b);
+		}
 	}
 	
 	@Override

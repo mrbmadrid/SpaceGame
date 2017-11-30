@@ -5,55 +5,39 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
 
-public class HealthStar extends DynamicEntity {
+public class UpgradeStar extends DynamicEntity {
 
 	private static final long serialVersionUID = -8434538224737225649L;
 	
 	Point partAnchor;
 	ParticleSystem part;
 	
-	public HealthStar(double xx, double yy, World world){
+	public UpgradeStar(double xx, double yy, World world){
 		this(xx, yy, new Polygon(
 				new int[]{
 						0,
-						3,
-						3,
-						9,
-						9,
-						3,
-						3,
+						5,
 						0,
-						0,
-						-6,
-						-6,
-						0,
+						-5
 				},
 				new int[]{
 						0,
-						0,
-						6,
-						6,
-						9,
-						9,
-						15,
-						15,
-						9,
-						9,
-						6,
-						6	
-				}, 12), world);
+						5,
+						10,
+						5
+				}, 4), world);
 	}
 	
-	public HealthStar(double xx, double yy, Polygon p, World world) {
+	public UpgradeStar(double xx, double yy, Polygon p, World world) {
 		super(xx, yy, p, world);
-		collisionDamage = -50;
-		c = Color.GREEN.brighter();
+		collisionDamage = 0;
+		c = Color.CYAN.brighter();
 		partAnchor = new Point((int)xx+3, (int)yy+7);
-		part = new ParticleSystem(xx, yy, 2, Color.GREEN, 1, 3, 20, partAnchor);
+		part = new ParticleSystem(xx, yy, 3, Color.CYAN, 1, 3, 10, partAnchor);
 		part.setRespawn(1);
 		part.setRespawnAmount(3);
 		part.setSpawnRange(5, 5);
-		id = 6;
+		id = 7;
 	}
 	
 	@Override

@@ -1,4 +1,4 @@
-package hpu.edu.spain.ColorCollision;
+package hpu.edu.spain.Game;
 import javax.swing.JFrame;
 
 public class Main {

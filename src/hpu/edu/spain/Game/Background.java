@@ -1,4 +1,4 @@
-package hpu.edu.spain.ColorCollision;
+package hpu.edu.spain.Game;
 
 import static java.awt.Color.BLACK;
 import static java.awt.Color.gray;
